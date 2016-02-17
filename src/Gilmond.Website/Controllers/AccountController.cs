@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -12,7 +9,7 @@ using Gilmond.Website.Models;
 
 namespace Gilmond.Website.Controllers
 {
-    [Authorize]
+	[Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;

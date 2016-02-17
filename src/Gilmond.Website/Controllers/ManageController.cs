@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -10,7 +9,7 @@ using Gilmond.Website.Models;
 
 namespace Gilmond.Website.Controllers
 {
-    [Authorize]
+	[Authorize]
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
