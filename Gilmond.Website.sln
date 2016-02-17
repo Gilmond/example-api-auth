@@ -11,6 +11,13 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Gilmond.Auth", "src\Gilmond
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Gilmond.Api", "src\Gilmond.Api\Gilmond.Api.xproj", "{CFB40B74-ADFD-4933-ACB0-B9E8F7F79DB5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A8FD38BD-D9BC-4C44-B38F-745D8D4B8ADA}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
