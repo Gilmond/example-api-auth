@@ -5,6 +5,8 @@ This repository is an out-of-hours repository for spitballing api authorisation 
 
 This section just details some dev notes as I work through this.
 
+** See [this link](https://github.com/smudge202/IdentityServer4.Samples) for reference. It's the one I'm working through but tweaking to our preference!
+
 * I've decided to go with IdentityServer4 for OAuth implementation
 * To make a certificate, in command prompt:
     * `set path=%path%;"C:\Program Files (x86)\Windows Kits\10\bin\x64\"` - _this will put makecert.exe on path; change the path if your makecert is elsewhere_
