@@ -3,43 +3,57 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Gilmond.Api
 {
 	public class Startup
-    {
-        public Startup(IHostingEnvironment env)
-        {
-            // Set up configuration sources.
-            var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
-        }
+	{
+		private readonly IConfigurationRoot _configuration;
 
-        public IConfigurationRoot Configuration { get; set; }
+		public Startup(IHostingEnvironment env)
+		{
+			var builder = new ConfigurationBuilder()
+				.AddJsonFile("appsettings.json")
+				.AddEnvironmentVariables();
+			_configuration = builder.Build();
+		}
+		
+		public void ConfigureServices(IServiceCollection services)
+		{
+			services.AddMvc();
+		}
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            // Add framework services.
-            services.AddMvc();
-        }
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+		{
+			loggerFactory.AddConsole(_configuration.GetSection("Logging"));
+			loggerFactory.AddDebug();
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+			app.UseIISPlatformHandler();
 
-            app.UseIISPlatformHandler();
+			app.UseCors(policy =>
+			{
+				policy.WithOrigins(_configuration["Security:AllowedOrigins"]);
+				policy.AllowAnyHeader();
+				policy.AllowAnyMethod();
+			});
 
-            app.UseStaticFiles();
+			JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+			app.UseIdentityServerAuthentication(options =>
+			{
+				options.Authority = _configuration["Security:AuthServerUri"];
+				options.ScopeName = _configuration["Security:Api:ScopeName"];
+				options.ScopeSecret = _configuration["Security:Api.ScopeSecret"];
+				options.AutomaticAuthenticate = true;
+				options.AutomaticChallenge = true;
+			});
 
-            app.UseMvc();
-        }
+			app.UseStaticFiles();
 
-        // Entry point for the application.
-        public static void Main(string[] args) => WebApplication.Run<Startup>(args);
-    }
+			app.UseMvc();
+		}
+
+		// Entry point for the application.
+		public static void Main(string[] args) => WebApplication.Run<Startup>(args);
+	}
 }
