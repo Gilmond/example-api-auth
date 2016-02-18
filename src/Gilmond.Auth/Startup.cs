@@ -9,23 +9,28 @@ namespace Gilmond.Auth
 {
 	public class Startup
 	{
-		private readonly IConfigurationRoot _configuration;
 		private readonly IApplicationEnvironment _environment;
+		private readonly IConfigurationRoot _configuration;
 
-		public Startup(IApplicationEnvironment environment)
+		public Startup(IApplicationEnvironment environment, IHostingEnvironment host)
 		{
+			_environment = environment;
+
 			var builder = new ConfigurationBuilder()
 				.AddJsonFile("appsettings.json")
 				.AddEnvironmentVariables();
+
+			if (host.IsDevelopment())
+				builder.AddUserSecrets();
+
 			_configuration = builder.Build();
-			_environment = environment;
 		}
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-
-
-			services.AddMvc();
+			services
+				.AddSecurity(_environment, _configuration)
+				.AddMvc();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,11 +39,21 @@ namespace Gilmond.Auth
 			loggerFactory.AddConsole(_configuration.GetSection("Logging"));
 			loggerFactory.AddDebug();
 
+			if (env.IsDevelopment())
+			{
+				app.UseBrowserLink();
+				app.UseDeveloperExceptionPage();
+			}
+			else
+			{
+				app.UseExceptionHandler("/Home/Error");
+			}
+
 			app.UseIISPlatformHandler();
 
 			app.UseStaticFiles();
 
-			app.UseMvc();
+			app.UseMvcWithDefaultRoute();
 		}
 
 		// Entry point for the application.
